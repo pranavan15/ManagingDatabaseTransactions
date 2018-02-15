@@ -90,7 +90,6 @@ package BankingApplication;
 //}
 
 function main (string[] args) {
-    _ = initializeDB ();
-    _, _, _ = createAccount("Pranavan");
+    //_, _, _ = createAccount("Pranavan");
 }
 
