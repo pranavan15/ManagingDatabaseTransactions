@@ -1,7 +1,7 @@
 # Managing Database Transactions
 In this guide you will learn about managing database transactions using Ballerina.
 
-## <a name="what-you-build"></a> What you’ll build 
+## <a name="what-you-build"></a> What you’ll Build 
 To understanding how you can manage database transactions using Ballerina, let’s consider a real world use case of a simple banking appliacation. This simple banking application allows users to,
 
 - **Create accounts** : Create a new account by providing username
