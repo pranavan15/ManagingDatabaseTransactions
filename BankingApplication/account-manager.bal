@@ -3,6 +3,7 @@ package BankingApplication;
 import ballerina.data.sql;
 import ballerina.log;
 import BankingApplication.dbUtil;
+import ballerina.config;
 
 // Get the SQL client connector
 sql:ClientConnector sqlConnector = dbUtil:getDatabaseClientConnector();
@@ -139,10 +140,8 @@ function initializeDB () (boolean isInitialized) {
         sqlConnector;
     }
 
-    // TODO: Uncomment reading config file logic and delete hardcoded value
-    // TODO: Currently the problem is Testerina is not reading values from config file - So cannot write test cases
-    //string dbName = config:getGlobalValue("DB_NAME");
-    string dbName = "bankDB";
+    string dbName = config:getGlobalValue("DATABASE_NAME");
+    // string dbName = "bankDB";
 
     int updateStatus1 = dbUtil:createDatabase(sqlConnector, dbName);
     log:printInfo("------------------------------- DB Initialization -------------------------------");
