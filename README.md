@@ -40,14 +40,16 @@ Optional Requirements
 Ballerina is a complete programming language that can have any custom project structure as you wish. Although language allows you to have any package structure, we'll stick with the following package structure for this project.
 
 ```
-├── employeeService
-│   |── util
-│   |    └── db
-│   |        ├── employee_database_util.bal
-│   |        └── employee_database_util_test.bal
-│   ├── employee_database_service.bal
-│   └── employee_database_service_test.bal
-└── ballerina.conf
+ManagingDatabaseTransactions
+├── ballerina.conf
+├── BankingApplication
+│   ├── account-manager.bal
+│   ├── account-manager_test.bal
+│   ├── application.bal
+│   └── dbUtil
+│       ├── database-utilities.bal
+│       └── database-utilities_test.bal
+└── README.md
 
 ```
 ##### Add database configurations to the `ballerina.conf` file
