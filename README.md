@@ -66,7 +66,7 @@ First you need to replace `localhost`, `3306`, `username`, `password` the respec
 
 # --------------- TODO ---------------
 
-## Response You Will Get
+## Response You'll Get
 
 ```
 2018-02-16 07:16:33,259 INFO  [BankingApplication] - ------------------------------- DB Initialization ------------------------------- 
