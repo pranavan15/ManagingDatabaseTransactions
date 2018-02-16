@@ -63,7 +63,7 @@ DATABASE_PASSWORD = password
 DATABASE_MAX_POOL_SIZE = 5
 DATABASE_NAME = bankDB
 ```
-First you need to replace `localhost`, `3306`, `username`, `password` the respective MySQL database connection properties in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
+First you need to replace `localhost`, `3306`, `username`, `password`, `5` with the respective MySQL database connection properties in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
 
 # --------------- TODO ---------------
 
