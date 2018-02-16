@@ -56,7 +56,7 @@ public function checkBalance (int accId) (int balance, error err) {
     table result = bankDB.select("SELECT BALANCE FROM ACCOUNT WHERE ID = ?", parameters, null);
     var jsonResult, _ = <json>result;
     balance, _ = (int)jsonResult[0]["BALANCE"];
-    log:printInfo("Available balance: " + balance);
+    log:printInfo("Available balance in account ID " + accId + ": " + balance);
     return;
 }
 
@@ -115,7 +115,7 @@ public function transferMoney (int fromAccId, int toAccId, int amount) (boolean 
         log:printInfo("Transfering money from account ID " + fromAccId + " to account ID " + toAccId);
         error withdrawError = withdrawMoney(fromAccId, amount);
         if (withdrawError != null) {
-            log:printError("Error while withdrawing the money : " + withdrawError.msg);
+            log:printError("Error while withdrawing the money: " + withdrawError.msg);
             abort;
         }
         error depositError = depositMoney(toAccId, amount);
@@ -145,7 +145,7 @@ function initializeDB () (boolean isInitialized) {
     string dbName = "bankDB";
 
     int updateStatus1 = dbUtil:createDatabase(sqlConnector, dbName);
-    log:printInfo("---------------------------------- Initialization ----------------------------------");
+    log:printInfo("------------------------------- DB Initialization -------------------------------");
     log:printInfo("Creating database '" + dbName + "' if not exists; Status: " + updateStatus1);
     int updateStatus2 = bankDB.update("USE " + dbName, null);
     log:printInfo("Selecting database: '" + dbName + "'; Status: " + updateStatus2);

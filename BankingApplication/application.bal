@@ -1,95 +1,62 @@
 package BankingApplication;
 
-//import ballerina.log;
-//
-//function main (string[] args) {
-//    // Transaction 1 - Expected to be successful
-//    log:printInfo("---------------------------------- Transaction 1 ----------------------------------");
-//    user user1 = {username:"Alice", password:"Alice123", age:20, country:"USA"};
-//    user user2 = {username:"Bob", password:"bob123", age:21, country:"UK"};
-//    user[] usersArray1 = [user1, user2];
-//    transaction with retries(0) {
-//        log:printInfo("Registering 'Alice' and 'Bob'");
-//        int updateStatus = createAccount(usersArray1);
-//        // If update fails, abort the transaction
-//        if (updateStatus == 0) {
-//            abort;
-//        }
-//        // Expected Results
-//        log:printInfo("Transaction successful");
-//        log:printInfo("'Alice' and 'Bob' have succesfully registered");
-//        log:printInfo("Transaction committed");
-//    } failed {
-//        log:printError("Transaction failed");
-//    }
-//    var registeredUsers1, conversionError1 = getAllRegisteredUsers();
-//    if (conversionError1 != null) {
-//        log:printError("Error while retriving registered users: " + conversionError1.msg);
-//    }
-//    log:printInfo("Registered users: " + registeredUsers1);
-//    log:printInfo("Expected Results: You should see 'Alice' and 'Bob'\n");
-//
-//    // Transaction 2 - Expected to fail
-//    log:printInfo("---------------------------------- Transaction 2 ----------------------------------");
-//    user user3 = {username:"Charles", password:"Charles123", age:25, country:"India"};
-//    user user4 = {username:"Alice", password:"AliceNew123", age:32, country:"Sri Lanka"};
-//    user[] usersArray2 = [user3, user4];
-//    try {
-//        transaction with retries(0) {
-//            log:printInfo("Registering 'Alice' and 'Charles'");
-//            int updateStatus = createAccount(usersArray2);
-//            // If update fails, abort the transaction
-//            if (updateStatus == 0) {
-//                abort;
-//            }
-//            log:printInfo("Transaction committed");
-//        } failed {
-//            // Expected Results
-//            log:printError("Transaction failed");
-//        }
-//    } catch (error err) {
-//        log:printInfo("Above error occurred as expected: username 'Alice' is already taken");
-//    }
-//    var registeredUsers2, conversionError2 = getAllRegisteredUsers();
-//    if (conversionError2 != null) {
-//        log:printError("Error while retriving registered users: " + conversionError2.msg);
-//    }
-//    log:printInfo("Registered users: " + registeredUsers2 + "\n" +
-//                  "Expected Results: You shouldn't see 'charles'. " +
-//                  "Attempt to reuse username 'Alice' is a DB constraint violation. " +
-//                  "Therefore, 'Charles' was rolled back in the same TX\n");
-//
-//    // Transaction 3 - Expected to fail
-//    log:printInfo("---------------------------------- Transaction 3 ----------------------------------");
-//    user user5 = {username:"Dias", password:"Dias123", age:24, country:"Sri Lanka"};
-//    user user6 = {username:"UserWhoLovesCats", password:"ABC123", age:27, country:"India"};
-//    user[] usersArray3 = [user5, user6];
-//    try {
-//        transaction with retries(0) {
-//            log:printInfo("Registering 'Dias' and 'UserWhoLovesCats'");
-//            int updateStatus = createAccount(usersArray3);
-//            // If update fails, abort the transaction
-//            if (updateStatus == 0) {
-//                abort;
-//            }
-//            log:printInfo("Transaction committed");
-//        } failed {
-//            // Expected Results
-//            log:printError("Transaction failed");
-//        }
-//    } catch (error err) {
-//        log:printInfo("Above error occurred as expected: username 'UserWhoLovesCats' is too big (Atmost 10 characters)");
-//    }
-//    var registeredUsers3, conversionError3 = getAllRegisteredUsers();
-//    if (conversionError3 != null) {
-//        log:printError("Error while retriving registered users: " + conversionError3.msg);
-//    }
-//    log:printInfo("Registered users: " + registeredUsers3 + "\n" +
-//                  "Expected Results: You shouldn't see 'Dias' and 'UserWhoLovesCats'. " +
-//                  "'UserWhoLovesCats' violated DB constraints, and 'Dias' was rolled back in the same TX\n");
-//}
+import ballerina.log;
 
 function main (string[] args) {
-    //_, _, _ = createAccount("Pranavan");
+    log:printInfo("----------------------------------------------------------------------------------");
+    // Create two new accounts
+    log:printInfo("Creating two new accounts for users 'Alice' and 'Bob'");
+    int accIdUser1 = createAccount("Alice");
+    int accIdUser2 = createAccount("Bob");
+
+    // Deposit money to both new accounts
+    log:printInfo("Deposit $500 to Alice's account initially");
+    _ = depositMoney(accIdUser1, 500);
+    log:printInfo("Deposit $1000 to Bob's account initially");
+    _ = depositMoney(accIdUser2, 1000);
+    // Scenario 1 - Transaction expected to be successful
+    log:printInfo("\n\n--------------------------------------------------------------- Scenario 1"
+                  + "--------------------------------------------------------------");
+    log:printInfo("Transfer $300 from Alice's account to Bob's account");
+    log:printInfo("Expected: Transaction to be successful");
+    _ = transferMoney(accIdUser1, accIdUser2, 300);
+    log:printInfo("Check balance for Alice's account");
+    _, _ = checkBalance(accIdUser1);
+    log:printInfo("You should see $200 balance in Alice's account");
+    log:printInfo("Check balance for Bob's account");
+    _, _ = checkBalance(accIdUser2);
+    log:printInfo("You should see $1300 balance in Bob's account");
+
+    // Scenario 2 - Transaction expected to fail
+    log:printInfo("\n\n--------------------------------------------------------------- Scenario 2"
+                  + "--------------------------------------------------------------");
+    log:printInfo("Again try to transfer $500 from Alice's account to Bob's account");
+    log:printInfo("Expected: Transaction to fail as Alice now only has a balance of $200 in account");
+    _ = transferMoney(accIdUser1, accIdUser2, 500);
+    log:printInfo("Check balance for Alice's account");
+    _, _ = checkBalance(accIdUser1);
+    log:printInfo("You should see $200 balance in Alice's account");
+    log:printInfo("Check balance for Bob's account");
+    _, _ = checkBalance(accIdUser2);
+    log:printInfo("You should see $1300 balance in Bob's account");
+
+    // Scenario 3 - Transaction expected to fail
+    log:printInfo("\n\n--------------------------------------------------------------- Scenario 3"
+                  + "--------------------------------------------------------------");
+    log:printInfo("Try to transfer $500 from Bob's account to a non existing account ID");
+    log:printInfo("Expected: Transaction to fail as account ID of recipient is invalid");
+    int toAccId = 123;
+    _ = transferMoney(accIdUser2, toAccId, 500);
+    log:printInfo("Check balance for Bob's account");
+    _, _ = checkBalance(accIdUser2);
+    log:printInfo("You should see $1300 balance in Bob's account (NOT $800)");
+    log:printInfo("Explanation: When trying to transfer $500 from Bob's account to account ID 123, \ninitially $500" +
+                  "withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipient" +
+                  "account ID; Hence \nthe TX failed and the withdraw operation rollbacked, which is in the same TX" +
+                  "\n");
+    log:printInfo("\n-------------------------------------------------------------------" +
+                  "---------------------------------------------------------------------");
+
 }
+
 

@@ -18,31 +18,105 @@ the visual editor (Composer) and other tools.
 # Response You Will Get
 
 ```
-2018-02-12 22:07:09,774 INFO  [userRegistrationSystem] - ---------------------------------- Initialization ---------------------------------- 
-2018-02-12 22:07:09,776 INFO  [userRegistrationSystem] - Creating database 'userDB' if not exists - Status: 1 
-2018-02-12 22:07:09,777 INFO  [userRegistrationSystem] - Selecting database userDB - status: 0 
-2018-02-12 22:07:09,797 INFO  [userRegistrationSystem] - Dropping table 'USERINFO' if exists - Status: 0 
-2018-02-12 22:07:09,826 INFO  [userRegistrationSystem] - Creating table 'USERINFO' - Status: 0
+2018-02-16 07:16:33,259 INFO  [BankingApplication] - ------------------------------- DB Initialization ------------------------------- 
+2018-02-16 07:16:33,264 INFO  [BankingApplication] - Creating database 'bankDB' if not exists; Status: 1 
+2018-02-16 07:16:33,265 INFO  [BankingApplication] - Selecting database: 'bankDB'; Status: 0 
+2018-02-16 07:16:33,289 INFO  [BankingApplication] - Dropping table 'ACCOUNT' if exists; Status: 0 
+2018-02-16 07:16:33,323 INFO  [BankingApplication] - Creating table 'ACCOUNT'; Status: 0
  
-2018-02-12 22:07:09,831 INFO  [userRegistrationSystem] - ---------------------------------- Transaction 1 ---------------------------------- 
-2018-02-12 22:07:09,837 INFO  [userRegistrationSystem] - Registering 'Alice' and 'Bob' 
-2018-02-12 22:07:09,850 INFO  [userRegistrationSystem] - Transaction successful 
-2018-02-12 22:07:09,852 INFO  [userRegistrationSystem] - 'Alice' and 'Bob' have succesfully registered 
-2018-02-12 22:07:09,855 INFO  [userRegistrationSystem] - Transaction committed 
-2018-02-12 22:07:10,059 INFO  [userRegistrationSystem] - Registered users: [{"USERNAME":"Alice"},{"USERNAME":"Bob"}] 
-2018-02-12 22:07:10,060 INFO  [userRegistrationSystem] - Expected Results: You should see 'Alice' and 'Bob'
+2018-02-16 07:16:33,330 INFO  [BankingApplication] - ---------------------------------------------------------------------------------- 
+2018-02-16 07:16:33,330 INFO  [BankingApplication] - Creating two new accounts for users 'Alice' and 'Bob' 
+2018-02-16 07:16:33,341 INFO  [BankingApplication] - Creating account for user: 'Alice'; Rows affected in ACCOUNT table: 1 
+2018-02-16 07:16:33,514 INFO  [BankingApplication] - Account ID for user: 'Alice': 1 
+2018-02-16 07:16:33,519 INFO  [BankingApplication] - Creating account for user: 'Bob'; Rows affected in ACCOUNT table: 1 
+2018-02-16 07:16:33,521 INFO  [BankingApplication] - Account ID for user: 'Bob': 2 
+2018-02-16 07:16:33,522 INFO  [BankingApplication] - Deposit $500 to Alice's account initially 
+2018-02-16 07:16:33,522 INFO  [BankingApplication] - Depositing money to account ID: 1 
+2018-02-16 07:16:33,522 INFO  [BankingApplication] - Verifying whether account ID 1 exists 
+2018-02-16 07:16:33,530 INFO  [BankingApplication] - Updating balance for account ID: 1; Rows affected in ACCOUNT table: 1 
+2018-02-16 07:16:33,531 INFO  [BankingApplication] - $500 has been deposited to account ID 1 
+2018-02-16 07:16:33,531 INFO  [BankingApplication] - Deposit $1000 to Bob's account initially 
+2018-02-16 07:16:33,531 INFO  [BankingApplication] - Depositing money to account ID: 2 
+2018-02-16 07:16:33,532 INFO  [BankingApplication] - Verifying whether account ID 2 exists 
+2018-02-16 07:16:33,537 INFO  [BankingApplication] - Updating balance for account ID: 2; Rows affected in ACCOUNT table: 1 
+2018-02-16 07:16:33,537 INFO  [BankingApplication] - $1000 has been deposited to account ID 2 
+2018-02-16 07:16:33,537 INFO  [BankingApplication] - 
+
+--------------------------------------------------------------- Scenario 1-------------------------------------------------------------- 
+2018-02-16 07:16:33,538 INFO  [BankingApplication] - Transfer $300 from Alice's account to Bob's account 
+2018-02-16 07:16:33,538 INFO  [BankingApplication] - Expected: Transaction to be successful 
+2018-02-16 07:16:33,539 INFO  [BankingApplication] - Initiating transaction 
+2018-02-16 07:16:33,540 INFO  [BankingApplication] - Transfering money from account ID 1 to account ID 2 
+2018-02-16 07:16:33,541 INFO  [BankingApplication] - Withdrawing money from account ID: 1 
+2018-02-16 07:16:33,541 INFO  [BankingApplication] - Checking balance for account ID: 1 
+2018-02-16 07:16:33,541 INFO  [BankingApplication] - Verifying whether account ID 1 exists 
+2018-02-16 07:16:33,544 INFO  [BankingApplication] - Available balance in account ID 1: 500 
+2018-02-16 07:16:33,545 INFO  [BankingApplication] - Updating balance for account ID: 1; Rows affected in ACCOUNT table: 1 
+2018-02-16 07:16:33,545 INFO  [BankingApplication] - $300 has been withdrawn from account ID 1 
+2018-02-16 07:16:33,545 INFO  [BankingApplication] - Depositing money to account ID: 2 
+2018-02-16 07:16:33,546 INFO  [BankingApplication] - Verifying whether account ID 2 exists 
+2018-02-16 07:16:33,549 INFO  [BankingApplication] - Updating balance for account ID: 2; Rows affected in ACCOUNT table: 1 
+2018-02-16 07:16:33,549 INFO  [BankingApplication] - $300 has been deposited to account ID 2 
+2018-02-16 07:16:33,550 INFO  [BankingApplication] - Transaction committed 
+2018-02-16 07:16:33,550 INFO  [BankingApplication] - Successfully transferred $300 from account ID 1 to account ID 2 
+2018-02-16 07:16:33,555 INFO  [BankingApplication] - Check balance for Alice's account 
+2018-02-16 07:16:33,556 INFO  [BankingApplication] - Checking balance for account ID: 1 
+2018-02-16 07:16:33,556 INFO  [BankingApplication] - Verifying whether account ID 1 exists 
+2018-02-16 07:16:33,559 INFO  [BankingApplication] - Available balance in account ID 1: 200 
+2018-02-16 07:16:33,559 INFO  [BankingApplication] - You should see $200 balance in Alice's account 
+2018-02-16 07:16:33,560 INFO  [BankingApplication] - Check balance for Bob's account 
+2018-02-16 07:16:33,560 INFO  [BankingApplication] - Checking balance for account ID: 2 
+2018-02-16 07:16:33,561 INFO  [BankingApplication] - Verifying whether account ID 2 exists 
+2018-02-16 07:16:33,563 INFO  [BankingApplication] - Available balance in account ID 2: 1300 
+2018-02-16 07:16:33,564 INFO  [BankingApplication] - You should see $1300 balance in Bob's account 
+2018-02-16 07:16:33,564 INFO  [BankingApplication] - 
+
+--------------------------------------------------------------- Scenario 2-------------------------------------------------------------- 
+2018-02-16 07:16:33,564 INFO  [BankingApplication] - Again try to transfer $500 from Alice's account to Bob's account 
+2018-02-16 07:16:33,565 INFO  [BankingApplication] - Expected: Transaction to fail as Alice now only has a balance of $200 in account 
+2018-02-16 07:16:33,565 INFO  [BankingApplication] - Initiating transaction 
+2018-02-16 07:16:33,565 INFO  [BankingApplication] - Transfering money from account ID 1 to account ID 2 
+2018-02-16 07:16:33,566 INFO  [BankingApplication] - Withdrawing money from account ID: 1 
+2018-02-16 07:16:33,566 INFO  [BankingApplication] - Checking balance for account ID: 1 
+2018-02-16 07:16:33,566 INFO  [BankingApplication] - Verifying whether account ID 1 exists 
+2018-02-16 07:16:33,569 INFO  [BankingApplication] - Available balance in account ID 1: 200 
+2018-02-16 07:16:33,570 ERROR [BankingApplication] - Error while withdrawing the money: Error: Not enough balance 
+2018-02-16 07:16:33,570 INFO  [BankingApplication] - Check balance for Alice's account 
+2018-02-16 07:16:33,571 INFO  [BankingApplication] - Checking balance for account ID: 1 
+2018-02-16 07:16:33,571 INFO  [BankingApplication] - Verifying whether account ID 1 exists 
+2018-02-16 07:16:33,574 INFO  [BankingApplication] - Available balance in account ID 1: 200 
+2018-02-16 07:16:33,574 INFO  [BankingApplication] - You should see $200 balance in Alice's account 
+2018-02-16 07:16:33,574 INFO  [BankingApplication] - Check balance for Bob's account 
+2018-02-16 07:16:33,575 INFO  [BankingApplication] - Checking balance for account ID: 2 
+2018-02-16 07:16:33,575 INFO  [BankingApplication] - Verifying whether account ID 2 exists 
+2018-02-16 07:16:33,577 INFO  [BankingApplication] - Available balance in account ID 2: 1300 
+2018-02-16 07:16:33,578 INFO  [BankingApplication] - You should see $1300 balance in Bob's account 
+2018-02-16 07:16:33,578 INFO  [BankingApplication] - 
+
+--------------------------------------------------------------- Scenario 3-------------------------------------------------------------- 
+2018-02-16 07:16:33,578 INFO  [BankingApplication] - Try to transfer $500 from Bob's account to a non existing account ID 
+2018-02-16 07:16:33,579 INFO  [BankingApplication] - Expected: Transaction to fail as account ID of recipient is invalid 
+2018-02-16 07:16:33,579 INFO  [BankingApplication] - Initiating transaction 
+2018-02-16 07:16:33,579 INFO  [BankingApplication] - Transfering money from account ID 2 to account ID 123 
+2018-02-16 07:16:33,580 INFO  [BankingApplication] - Withdrawing money from account ID: 2 
+2018-02-16 07:16:33,580 INFO  [BankingApplication] - Checking balance for account ID: 2 
+2018-02-16 07:16:33,580 INFO  [BankingApplication] - Verifying whether account ID 2 exists 
+2018-02-16 07:16:33,583 INFO  [BankingApplication] - Available balance in account ID 2: 1300 
+2018-02-16 07:16:33,584 INFO  [BankingApplication] - Updating balance for account ID: 2; Rows affected in ACCOUNT table: 1 
+2018-02-16 07:16:33,584 INFO  [BankingApplication] - $500 has been withdrawn from account ID 2 
+2018-02-16 07:16:33,585 INFO  [BankingApplication] - Depositing money to account ID: 123 
+2018-02-16 07:16:33,585 INFO  [BankingApplication] - Verifying whether account ID 123 exists 
+2018-02-16 07:16:33,589 ERROR [BankingApplication] - Error while depositing the money: Error: Account does not exist 
+2018-02-16 07:16:33,598 INFO  [BankingApplication] - Check balance for Bob's account 
+2018-02-16 07:16:33,598 INFO  [BankingApplication] - Checking balance for account ID: 2 
+2018-02-16 07:16:33,598 INFO  [BankingApplication] - Verifying whether account ID 2 exists 
+2018-02-16 07:16:33,601 INFO  [BankingApplication] - Available balance in account ID 2: 1300 
+2018-02-16 07:16:33,601 INFO  [BankingApplication] - You should see $1300 balance in Bob's account (NOT $800) 
+2018-02-16 07:16:33,601 INFO  [BankingApplication] - Explanation: When trying to transfer $500 from Bob's account to account ID 123, 
+initially $500withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipientaccount ID; Hence 
+the TX failed and the withdraw operation rollbacked, which is in the same TX
  
-2018-02-12 22:07:10,060 INFO  [userRegistrationSystem] - ---------------------------------- Transaction 2 ---------------------------------- 
-2018-02-12 22:07:10,060 INFO  [userRegistrationSystem] - Registering 'Alice' and 'Charles' 
-2018-02-12 22:07:10,077 ERROR [userRegistrationSystem] - Transaction failed 
-2018-02-12 22:07:10,078 INFO  [userRegistrationSystem] - Above error occured as expected: username 'Alice' is already taken 
-2018-02-12 22:07:10,079 INFO  [userRegistrationSystem] - Registered users: [{"USERNAME":"Alice"},{"USERNAME":"Bob"}]
-Expected Results: You shouldn't see 'charles'. Attempt to reuse username 'Alice' is a DB constraint violation. Therefore, 'Charles' was rolled back in the same TX
- 
-2018-02-12 22:07:10,079 INFO  [userRegistrationSystem] - ---------------------------------- Transaction 3 ---------------------------------- 
-2018-02-12 22:07:10,080 INFO  [userRegistrationSystem] - Registering 'Dias' and 'UserWhoLovesCats' 
-2018-02-12 22:07:10,085 ERROR [userRegistrationSystem] - Transaction failed 
-2018-02-12 22:07:10,086 INFO  [userRegistrationSystem] - Above error occured as expected: username 'UserWhoLovesCats' is too big (Atmost 10 characters) 
-2018-02-12 22:07:10,088 INFO  [userRegistrationSystem] - Registered users: [{"USERNAME":"Alice"},{"USERNAME":"Bob"}]
-Expected Results: You shouldn't see 'Dias' and 'UserWhoLovesCats'. 'UserWhoLovesCats' violated DB constraints, and 'Dias' was rolled back in the same TX
+2018-02-16 07:16:33,601 INFO  [BankingApplication] - 
+---------------------------------------------------------------------------------------------------------------------------------------- 
+
 ```
