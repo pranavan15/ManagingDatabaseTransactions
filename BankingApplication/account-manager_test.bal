@@ -6,7 +6,7 @@ import ballerina.test;
 // TODO: Currently it's failing as Testerina throws error if a function has a log statement
 
 
-// Unit test for testing initializeDB function
+// Unit test for testing initializeDB() function
 function testInitializeDB () {
     boolean isInitialized = initializeDB();
     // Initialization expected to be successful
@@ -14,6 +14,7 @@ function testInitializeDB () {
     test:assertTrue(isInitialized, "Failed to initialize the database properly");
 }
 
+// Unit test for testing createAccount() function
 function testCreateAccount () {
     string name = "Carol";
     // Create account for username "Carol"
@@ -23,6 +24,7 @@ function testCreateAccount () {
     test:assertTrue(accountId > 0, "Failed to create account for user: " + name);
 }
 
+// Unit test for testing verifyAccount() function - passing scenario
 function testVerifyAccountPass () {
     // Create an account for username "Dave"
     int accountId = createAccount("Dave");
@@ -32,6 +34,7 @@ function testVerifyAccountPass () {
     test:assertTrue(accountExists, "Method 'verifyAccount()' is not behaving as intended");
 }
 
+// Unit test for testing verifyAccount() function - failing scenario: due to invalid account
 function testVerifyAccountFail () {
     // Provide a non existing account ID to method 'verifyAccount()'
     boolean accountExists = verifyAccount(1234);
@@ -39,6 +42,7 @@ function testVerifyAccountFail () {
     test:assertFalse(accountExists, "Method 'verifyAccount()' is not behaving as intended");
 }
 
+// Unit test for testing depositMoney() function - passing scenario
 function testDepositMoneyPass () {
     // Create an account for username "Elite"
     // This will create a new account with initial balance zero
@@ -49,6 +53,7 @@ function testDepositMoneyPass () {
     test:assertTrue(err == null, "Method 'depositMoney()' is not behaving as intended");
 }
 
+// Unit test for testing depositMoney() function - failing scenario: due to invalid amount
 function testDepositMoneyFailCase1 () {
     // Create an account for username "Frank"
     // This will create a new account with initial balance zero
@@ -63,6 +68,7 @@ function testDepositMoneyFailCase1 () {
     test:assertStringEquals(err.msg, expectedErrMsg, "Method 'depositMoney()' is not behaving as intended");
 }
 
+// Unit test for testing depositMoney() function - failing scenario: due to invalid account
 function testDepositMoneyFailCase2 () {
     // Provide a non existing account ID to method 'depositMoney()' and try to deposit $100
     error err = depositMoney(1234, 100);
@@ -74,6 +80,7 @@ function testDepositMoneyFailCase2 () {
     test:assertStringEquals(err.msg, expectedErrMsg, "Method 'depositMoney()' is not behaving as intended");
 }
 
+// Unit test for testing checkBalance() function - passing scenario
 function testCheckBalancePass () {
     // Create an account for username "Grace"
     // This will create a new account with initial balance zero
@@ -88,6 +95,7 @@ function testCheckBalancePass () {
     test:assertIntEquals(balance, 500, "Method 'checkBalance()' is not behaving as intended");
 }
 
+// Unit test for testing checkBalance() function - failing scenario: due to invalid account
 function testCheckBalanceFail () {
     // Provide a non existing account ID to method 'checkBalance()'
     var balance, err = checkBalance(1234);
@@ -101,6 +109,7 @@ function testCheckBalanceFail () {
     test:assertIntEquals(balance, 0, "Method 'checkBalance()' is not behaving as intended");
 }
 
+// Unit test for testing withdrawMoney() function - passing scenario
 function testWithdrawMoneyPass () {
     // Create an account for username "Heidi"
     // This will create a new account with initial balance zero
@@ -113,6 +122,7 @@ function testWithdrawMoneyPass () {
     test:assertTrue(err == null, "Method 'withdrawMoney()' is not behaving as intended");
 }
 
+// Unit test for testing withdrawMoney() function - failing scenario: due to invalid amount
 function testWithdrawMoneyFailCase1 () {
     // Create an account for username "Judy"
     // This will create a new account with initial balance zero
@@ -129,6 +139,7 @@ function testWithdrawMoneyFailCase1 () {
     test:assertStringEquals(err.msg, expectedErrMsg, "Method 'withdrawMoney()' is not behaving as intended");
 }
 
+// Unit test for testing withdrawMoney() function - failing scenario: due to invalid account
 function testWithdrawMoneyFailCase2 () {
     // Provide a non existing account ID to method 'withdrawMoney()'
     error err = withdrawMoney(1234, 200);
@@ -140,6 +151,7 @@ function testWithdrawMoneyFailCase2 () {
     test:assertStringEquals(err.msg, expectedErrMsg, "Method 'withdrawMoney()' is not behaving as intended");
 }
 
+// Unit test for testing withdrawMoney() function - failing scenario: due to not enough balance
 function testWithdrawMoneyFailCase3 () {
     // Create an account for username "Merlin"
     // This will create a new account with initial balance zero
