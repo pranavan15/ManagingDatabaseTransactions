@@ -2,10 +2,6 @@ package BankingApplication;
 
 import ballerina.test;
 
-// TODO: Uncomment tests
-// TODO: Currently it's failing as Testerina throws error if a function has a log statement
-
-
 // Unit test for testing initializeDB() function
 function testInitializeDB () {
     boolean isInitialized = initializeDB();
@@ -105,7 +101,7 @@ function testCheckBalanceFail () {
     string expectedErrMsg = "Error: Account does not exist";
     // Test whether the error message is as expected
     test:assertStringEquals(err.msg, expectedErrMsg, "Method 'checkBalance()' is not behaving as intended");
-    // balance should be zero (default value)
+    // 'balance' should be zero (default value)
     test:assertIntEquals(balance, 0, "Method 'checkBalance()' is not behaving as intended");
 }
 
@@ -166,4 +162,73 @@ function testWithdrawMoneyFailCase3 () {
     string expectedErrMsg = "Error: Not enough balance";
     // Test whether the error message is as expected
     test:assertStringEquals(err.msg, expectedErrMsg, "Method 'withdrawMoney()' is not behaving as intended");
+}
+
+// Unit test for testing transferMoney() function - passing scenario
+function testTransferMoneyPass () {
+    // Create two new accounts for username "Walter" and "Wesley"
+    int accountIdUser1  = createAccount("Walter");
+    int accountIdUser2 = createAccount("Wesley");
+    // Deposit $500 to Walter's account
+    _ = depositMoney(accountIdUser1, 500);
+    // Deposit $1000 to Wesley's account
+    _ = depositMoney(accountIdUser2, 1000);
+    // Transfer $700 from Wesley's account to Walter's account
+    boolean isSuccessful = transferMoney(accountIdUser2, accountIdUser1, 700);
+    // 'isSuccessful' should be true as transaction is expected to be successful
+    test:assertTrue(isSuccessful, "Method 'transferMoney()' is not behaving as intended");
+}
+
+// Unit test for testing transferMoney() function - failing scenario: due to invalid amount
+function testTransferMoneyFail1 () {
+    // Create two new accounts for username "Victor" and "Vanna"
+    int accountIdUser1  = createAccount("Victor");
+    int accountIdUser2 = createAccount("Vanna");
+    // Deposit $500 to Victor's account
+    _ = depositMoney(accountIdUser1, 500);
+    // Deposit $1000 to Vanna's account
+    _ = depositMoney(accountIdUser2, 1000);
+    // Try to pass a negative amount to transfer
+    boolean isSuccessful = transferMoney(accountIdUser2, accountIdUser1, -200);
+    // 'isSuccessful' should be false as transaction is expected to fail
+    test:assertFalse(isSuccessful, "Method 'transferMoney()' is not behaving as intended");
+}
+
+// Unit test for testing transferMoney() function - failing scenario: due to not enough balance
+function testTransferMoneyFail2 () {
+    // Create two new accounts for username "Trent" and "Ted"
+    int accountIdUser1  = createAccount("Trent");
+    int accountIdUser2 = createAccount("Ted");
+    // Deposit $500 to Trent's account
+    _ = depositMoney(accountIdUser1, 500);
+    // Deposit $1000 to Ted's account
+    _ = depositMoney(accountIdUser2, 1000);
+    // Try to pass a big amount to Transfer, which is greater than the available balance
+    boolean isSuccessful = transferMoney(accountIdUser2, accountIdUser1, 1500);
+    // 'isSuccessful' should be false as transaction is expected to fail
+    test:assertFalse(isSuccessful, "Method 'transferMoney()' is not behaving as intended");
+}
+
+// Unit test for testing transferMoney() function - failing scenario: due to invalid transferor account ID
+function testTransferMoneyFail3 () {
+    // Create an account for username "Broad"
+    int accountId = createAccount("Broad");
+    // Deposit $500 to Broad's account
+    _ = depositMoney(accountId, 500);
+    // Provide a non existing account ID as transferor account ID to method 'transferMoney()'
+    boolean isSuccessful = transferMoney(1234, accountId, 100);
+    // 'isSuccessful' should be false as transaction is expected to fail
+    test:assertFalse(isSuccessful, "Method 'transferMoney()' is not behaving as intended");
+}
+
+// Unit test for testing transferMoney() function - failing scenario: due to invalid transferee account ID
+function testTransferMoneyFail4 () {
+    // Create an account for username "White"
+    int accountId = createAccount("White");
+    // Deposit $500 to White's account
+    _ = depositMoney(accountId, 500);
+    // Provide a non existing account ID as transferee to method 'transferMoney()'
+    boolean isSuccessful = transferMoney(accountId, 1234, 100);
+    // 'isSuccessful' should be false as transaction is expected to fail
+    test:assertFalse(isSuccessful, "Method 'transferMoney()' is not behaving as intended");
 }

@@ -112,7 +112,7 @@ public function withdrawMoney (int accId, int amount) (error err) {
 public function transferMoney (int fromAccId, int toAccId, int amount) (boolean isSuccessful) {
     transaction with retries(0) {
         log:printInfo("Initiating transaction");
-        log:printInfo("Transfering money from account ID " + fromAccId + " to account ID " + toAccId);
+        log:printInfo("Transferring money from account ID " + fromAccId + " to account ID " + toAccId);
         error withdrawError = withdrawMoney(fromAccId, amount);
         if (withdrawError != null) {
             log:printError("Error while withdrawing the money: " + withdrawError.msg);
