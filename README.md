@@ -1,21 +1,70 @@
-# Transaction Processing Using Ballerina
-This is a use-case example that explains How to manage transactions in Ballerina language (https://ballerinalang.org).
+# Managing Database Transactions
+In this guide you will learn about managing database transactions using Ballerina.
 
-# About This Service 
-This is a user registration system where each user needs to register with a unique username. To demonstrate the
-ballerina transaction, 3 different sets of user registrations illustrated in this example. Each set of registration is 
-handled through a specific transaction. First transaction is expected to be successful. Other two are expected to fail
-due to database constraint violations. This example clearly explains what happen when a transaction fails and how 
-to manage transactions using ballerina language.
+## <a name="what-you-build"></a> What you’ll build 
+To understanding how you can manage database transactions using Ballerina, let’s consider a real world use case of a simple banking appliacation. This simple banking application allows users to,
 
-# How to Deploy
-1) Go to http://www.ballerinalang.org and click Download.
-2) Download the Ballerina Tools distribution and unzip it on your computer. Ballerina Tools includes the Ballerina runtime plus
-the visual editor (Composer) and other tools.
-3) Add the <ballerina_home>/bin directory to your $PATH environment variable so that you can run the Ballerina commands from anywhere.
-4) After setting up <ballerina_home>, navigate to the folder containing `UserRegistration.bal` file and run: `$ ballerina run UserRegistration.bal` 
+- **Create accounts** : Create a new account by providing username
+- **Verify accounts** : Verify the existance of an account by providing the account Id
+- **Check balance** : Check account balance
+- **Deposit money** : Deposit money to an account
+- **Withdraw money** : Withdraw money from an account
+- **Transfer money** : Transfer money from one account to another account
 
-# Response You Will Get
+
+Transfering money from one account to another account includes both operations, withdrawal from transferor and deposit to transferee. Thus, transferring operation required to be done using a transaction block. A transaction will ensure the 'ACID'properties, which is a set of properties of database transactions intended to guarantee validity even in the event of errors, power failures, etc.
+
+For example, when transferring money if the transaction fails during deposit operation, then the withdrawal operation that carried out prior to deposit operation also needs to be rolled back. If not we will end up in a state where transferor loses money. Therefore, in order to ensure the atomicity (all or nothing property) we need to perform the money transfer operation as a transaction. 
+
+This example explains three different scenarios where one user tries to transfer money from his/her account to another user's account. First scenario shows a successful transaction whereas the other to scenarios fail due to unique reasons. You can observe how transactions using Ballerina ensure the 'ACID' properties through this example.
+
+## <a name="pre-req"></a> Prerequisites
+ 
+- JDK 1.8 or later
+- Ballerina Distribution (Install Instructions:  https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
+- MySQL JDBC driver (Download https://dev.mysql.com/downloads/connector/j/)
+  * Copy the downloaded JDBC driver to the <BALLERINA_HOME>/bre/lib folder 
+- A Text Editor or an IDE 
+
+Optional Requirements
+- Docker (Follow instructions in https://docs.docker.com/engine/installation/)
+- Ballerina IDE plugins. ( Intellij IDEA, VSCode, Atom)
+- Testerina (Refer: https://github.com/ballerinalang/testerina)
+- Container-support (Refer: https://github.com/ballerinalang/container-support)
+- Docerina (Refer: https://github.com/ballerinalang/docerina)
+
+
+## <a name="develop-app"></a> Developing the Application
+### Before You Begin
+##### Understand the Package Structure
+Ballerina is a complete programming language that can have any custom project structure as you wish. Although language allows you to have any package structure, we'll stick with the following package structure for this project.
+
+```
+├── employeeService
+│   |── util
+│   |    └── db
+│   |        ├── employee_database_util.bal
+│   |        └── employee_database_util_test.bal
+│   ├── employee_database_service.bal
+│   └── employee_database_service_test.bal
+└── ballerina.conf
+
+```
+##### Add database configurations to the `ballerina.conf` file
+The purpose of  `ballerina.conf` file is to provide any external configurations that are needed to ballerina programs. Since this guide have interact with MySQL database we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
+This configuration file will have the following fields,
+```
+DATABASE_HOST = localhost
+DATABASE_PORT = 3306
+DATABASE_USERNAME = username
+DATABASE_PASSWORD = password
+DATABASE_NAME = bankDB
+```
+First you need to replace `localhost`, `3306`, `username`, `password` the respective MySQL database connection properties in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
+
+# --------------- TODO ---------------
+
+## Response You Will Get
 
 ```
 2018-02-16 07:16:33,259 INFO  [BankingApplication] - ------------------------------- DB Initialization ------------------------------- 
