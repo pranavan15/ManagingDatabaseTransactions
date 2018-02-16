@@ -14,6 +14,7 @@ function main (string[] args) {
     _ = depositMoney(accIdUser1, 500);
     log:printInfo("Deposit $1000 to Bob's account initially");
     _ = depositMoney(accIdUser2, 1000);
+
     // Scenario 1 - Transaction expected to be successful
     log:printInfo("\n\n--------------------------------------------------------------- Scenario 1"
                   + "--------------------------------------------------------------");
@@ -45,8 +46,7 @@ function main (string[] args) {
                   + "--------------------------------------------------------------");
     log:printInfo("Try to transfer $500 from Bob's account to a non existing account ID");
     log:printInfo("Expected: Transaction to fail as account ID of recipient is invalid");
-    int toAccId = 123;
-    _ = transferMoney(accIdUser2, toAccId, 500);
+    _ = transferMoney(accIdUser2, 1234, 500);
     log:printInfo("Check balance for Bob's account");
     _, _ = checkBalance(accIdUser2);
     log:printInfo("You should see $1300 balance in Bob's account (NOT $800)");
@@ -57,5 +57,3 @@ function main (string[] args) {
     log:printInfo("\n-------------------------------------------------------------------" +
                   "---------------------------------------------------------------------");
 }
-
-

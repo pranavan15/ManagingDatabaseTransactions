@@ -139,10 +139,7 @@ function initializeDB () (boolean isInitialized) {
     endpoint<sql:ClientConnector> bankDB {
         sqlConnector;
     }
-
     string dbName = config:getGlobalValue("DATABASE_NAME");
-    // string dbName = "bankDB";
-
     int updateStatus1 = dbUtil:createDatabase(sqlConnector, dbName);
     log:printInfo("------------------------------- DB Initialization -------------------------------");
     log:printInfo("Creating database '" + dbName + "' if not exists; Status: " + updateStatus1);

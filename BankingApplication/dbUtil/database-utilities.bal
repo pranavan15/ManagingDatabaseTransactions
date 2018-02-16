@@ -16,18 +16,13 @@ public function getDatabaseClientConnector () (sql:ClientConnector sqlConnector)
     if (conversionError2 != null) {
         throw conversionError2;
     }
-    //string dbHost = "localhost";
-    //string dbUsername = "root";
-    //string dbPassword = "Mathematics";
-    //var dbPort = 3306;
-    //var dbMaxPoolSize = 5;
 
     // Construct connection URL
     string connectionUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "?useSSL=true";
 
     // Create SQL connector
     sqlConnector = create sql:ClientConnector(sql:DB.GENERIC, "", 0, "", dbUsername, dbPassword,
-                                                                  {url:connectionUrl, maximumPoolSize:dbMaxPoolSize});
+                                              {url:connectionUrl, maximumPoolSize:dbMaxPoolSize});
     return;
 }
 
