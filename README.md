@@ -172,3 +172,22 @@ the TX failed and the withdraw operation rollbacked, which is in the same TX
 ---------------------------------------------------------------------------------------------------------------------------------------- 
 
 ```
+
+### <a name="deploying-on-docker"></a> Deploying on Docker
+(Work in progress) 
+
+### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
+(Work in progress) 
+
+
+## <a name="observability"></a> Observability 
+
+### <a name="logging"></a> Logging
+(Work in progress) 
+
+### <a name="metrics"></a> Metrics
+(Work in progress) 
+
+
+### <a name="tracing"></a> Tracing 
+(Work in progress)
