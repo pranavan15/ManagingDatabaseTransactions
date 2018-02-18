@@ -167,7 +167,7 @@ function testWithdrawMoneyFailCase3 () {
 // Unit test for testing transferMoney() function - passing scenario
 function testTransferMoneyPass () {
     // Create two new accounts for username "Walter" and "Wesley"
-    int accountIdUser1  = createAccount("Walter");
+    int accountIdUser1 = createAccount("Walter");
     int accountIdUser2 = createAccount("Wesley");
     // Deposit $500 to Walter's account
     _ = depositMoney(accountIdUser1, 500);
@@ -182,7 +182,7 @@ function testTransferMoneyPass () {
 // Unit test for testing transferMoney() function - failing scenario: due to invalid amount
 function testTransferMoneyFail1 () {
     // Create two new accounts for username "Victor" and "Vanna"
-    int accountIdUser1  = createAccount("Victor");
+    int accountIdUser1 = createAccount("Victor");
     int accountIdUser2 = createAccount("Vanna");
     // Deposit $500 to Victor's account
     _ = depositMoney(accountIdUser1, 500);
@@ -197,7 +197,7 @@ function testTransferMoneyFail1 () {
 // Unit test for testing transferMoney() function - failing scenario: due to not enough balance
 function testTransferMoneyFail2 () {
     // Create two new accounts for username "Trent" and "Ted"
-    int accountIdUser1  = createAccount("Trent");
+    int accountIdUser1 = createAccount("Trent");
     int accountIdUser2 = createAccount("Ted");
     // Deposit $500 to Trent's account
     _ = depositMoney(accountIdUser1, 500);
