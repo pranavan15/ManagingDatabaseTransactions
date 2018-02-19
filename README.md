@@ -1,22 +1,22 @@
 # Managing Database Transactions
-In this guide you will learn about managing database transactions using Ballerina.
+In this guide, you will learn about managing database transactions using Ballerina.
 
 ## <a name="what-you-build"></a> What you’ll Build 
-To understanding how you can manage database transactions using Ballerina, let’s consider a real world use case of a simple banking appliacation. In this example you will build a simple banking application, which will allow users to,
+To understanding how you can manage database transactions using Ballerina, let’s consider a real-world use case of a simple banking application. In this example, you will build a simple banking application, which will allow users to,
 
 - **Create accounts** : Create a new account by providing username
-- **Verify accounts** : Verify the existance of an account by providing the account Id
+- **Verify accounts** : Verify the existence of an account by providing the account Id
 - **Check balance** : Check account balance
-- **Deposit money** : Deposit money to an account
+- **Deposit money** : Deposit money into an account
 - **Withdraw money** : Withdraw money from an account
 - **Transfer money** : Transfer money from one account to another account
 
 
-Transfering money from one account to another account includes both operations, withdrawal from transferor and deposit to transferee. Thus, transferring operation required to be done using a transaction block. A transaction will ensure the 'ACID'properties, which is a set of properties of database transactions intended to guarantee validity even in the event of errors, power failures, etc.
+Transferring money from one account to another account includes both operations, withdrawal from the transferor and deposit to the transferee. Thus, transferring operation required to be done using a transaction block. A transaction will ensure the 'ACID'properties, which is a set of properties of database transactions intended to guarantee validity even in the event of errors, power failures, etc.
 
-For example, when transferring money if the transaction fails during deposit operation, then the withdrawal operation that carried out prior to deposit operation also needs to be rolled back. If not we will end up in a state where transferor loses money. Therefore, in order to ensure the atomicity (all or nothing property) we need to perform the money transfer operation as a transaction. 
+For example, when transferring money if the transaction fails during deposit operation, then the withdrawal operation that carried out prior to deposit operation also needs to be rolled back. If not we will end up in a state where transferor loses money. Therefore, in order to ensure the atomicity (all or nothing property), we need to perform the money transfer operation as a transaction. 
 
-This example explains three different scenarios where one user tries to transfer money from his/her account to another user's account. First scenario shows a successful transaction whereas the other to scenarios fail due to unique reasons. You can observe how transactions using Ballerina ensure the 'ACID' properties through this example.
+This example explains three different scenarios where one user tries to transfer money from his/her account to another user's account. The first scenario shows a successful transaction whereas the other to scenarios fail due to unique reasons. You can observe how transactions using Ballerina ensure the 'ACID' properties through this example.
 
 ## <a name="pre-req"></a> Prerequisites
  
@@ -28,7 +28,7 @@ This example explains three different scenarios where one user tries to transfer
 
 Optional Requirements
 - Docker (Follow instructions in https://docs.docker.com/engine/installation/)
-- Ballerina IDE plugins. ( Intellij IDEA, VSCode, Atom)
+- Ballerina IDE plugins. ( IntelliJ IDEA, VSCode, Atom)
 - Testerina (Refer: https://github.com/ballerinalang/testerina)
 - Container-support (Refer: https://github.com/ballerinalang/container-support)
 - Docerina (Refer: https://github.com/ballerinalang/docerina)
@@ -53,7 +53,7 @@ ManagingDatabaseTransactions
 
 ```
 ##### Add database configurations to the `ballerina.conf` file
-The purpose of  `ballerina.conf` file is to provide any external configurations that are needed to ballerina programs. Since this guide have interact with MySQL database we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
+The purpose of  `ballerina.conf` file is to provide any external configurations that are needed for ballerina programs. Since we need to interact with MySQL database we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
 This configuration file will have the following fields,
 ```
 DATABASE_HOST = localhost
@@ -65,9 +65,59 @@ DATABASE_NAME = bankDB
 ```
 First you have to replace `localhost`, `3306`, `username`, `password`, `5` with the respective MySQL database connection properties you need in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
 
-### Implementing the Banking Application
+### Implementation
 
-1. 
+1. Let's get started with implementing the database utility functions. Before accessing the database from ballerina, we need to have the SQL client connector. We also need a function to create databases from the code itself. 
+`database-utilities.bal` file in the dbUtil package includes the implementations for the above-mentioned functions, which is attached below. Inline comments are used to explain the important code segments.
+
+##### database-utilities.bal
+```ballerina
+package BankingApplication.dbUtil;
+
+import ballerina.data.sql;
+import ballerina.config;
+
+// Function to get SQL database client connector
+public function getDatabaseClientConnector () (sql:ClientConnector sqlConnector) {
+    // DB configurations - Get configuration details from the ballerina.config file
+    string dbHost = config:getGlobalValue("DATABASE_HOST");
+    string dbUsername = config:getGlobalValue("DATABASE_USERNAME");
+    string dbPassword = config:getGlobalValue("DATABASE_PASSWORD");
+    var dbPort, conversionError1 = <int>config:getGlobalValue("DATABASE_PORT");
+    // If string to int conversion fails, throw the error
+    if (conversionError1 != null) {
+        throw conversionError1;
+    }
+    var dbMaxPoolSize, conversionError2 = <int>config:getGlobalValue("DATABASE_MAX_POOL_SIZE");
+    // If string to int conversion fails, throw the error
+    if (conversionError2 != null) {
+        throw conversionError2;
+    }
+
+    // Construct connection URL
+    string connectionUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "?useSSL=true";
+    // Create SQL connector
+    sqlConnector = create sql:ClientConnector(sql:DB.GENERIC, "", 0, "", dbUsername, dbPassword,
+                                              {url:connectionUrl, maximumPoolSize:dbMaxPoolSize});
+    // Return the SQL client connector
+    return;
+}
+
+// Function to create a database
+public function createDatabase (sql:ClientConnector sqlConnector, string dbName) (int updateStatus) {
+    endpoint<sql:ClientConnector> databaseEP {
+        sqlConnector;
+    }
+    // Execute the create database SQL query
+    updateStatus = databaseEP.update("CREATE DATABASE IF NOT EXISTS " + dbName, null);
+    // Return the update status
+    return;
+}
+
+```
+
+2. Next, we will create the `account-manager.bal`, which includes the account management related logic. It includes a private method to initialize the database and public functions to create an account, verify an account, check account balance, withdraw money from an account, deposit money to an account, and transfer money from one account to another. The function that handles the transfer money logic includes a transaction block to ensure that the transfer is successful only when both, withdrawal from the transferor and deposit to the transferee are successful. If one of these operations fail, the transaction will be aborted and all actions carried out before the failure will also be rolled back. Skeleton of the 
+
 
 ### Response You'll Get
 
