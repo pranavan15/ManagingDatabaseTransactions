@@ -35,12 +35,12 @@ Optional Requirements
  
 
 ## <a name="develop-app"></a> Developing the Application
-### Before You Begin
+### <a name="before-begin"></a> Before You Begin
 ##### Understand the Package Structure
 Ballerina is a complete programming language that can have any custom project structure as you wish. Although language allows you to have any package structure, we'll stick with the following package structure for this project.
 
 ```
-ManagingDatabaseTransactions
+managing-database-transactions
 ├── ballerina.conf
 ├── BankingApplication
 │   ├── account-manager.bal
@@ -65,10 +65,10 @@ DATABASE_NAME = bankDB
 ```
 First you have to replace `localhost`, `3306`, `username`, `password`, `5` with the respective MySQL database connection properties you need in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
 
-### Implementation
+### <a name="Implementation"></a> Implementation
 
 1. Let's get started with implementing the database utility functions. Before accessing the database from ballerina, we need to have the SQL client connector. We also need a function to create databases from the code itself. 
-`database-utilities.bal` file in the dbUtil package includes the implementations for the above-mentioned functions, which is attached below. Inline comments are used to explain the important code segments.
+File `database-utilities.bal` in the dbUtil package includes the implementations for the above-mentioned functions, which is attached below. Inline comments are used to explain the important code segments.
 
 ##### database-utilities.bal
 ```ballerina
@@ -116,10 +116,200 @@ public function createDatabase (sql:ClientConnector sqlConnector, string dbName)
 
 ```
 
-2. Next, we will create the `account-manager.bal`, which includes the account management related logic. It includes a private method to initialize the database and public functions to create an account, verify an account, check account balance, withdraw money from an account, deposit money to an account, and transfer money from one account to another. The function that handles the transfer money logic includes a transaction block to ensure that the transfer is successful only when both, withdrawal from the transferor and deposit to the transferee are successful. If one of these operations fail, the transaction will be aborted and all actions carried out before the failure will also be rolled back. Skeleton of the 
+2. Next, we will create the `account-manager.bal`, which includes the account management related logic. It includes a private method to initialize the database and public functions to create an account, verify an account, check account balance, withdraw money from an account, deposit money to an account, and transfer money from one account to another. The function that handles the transfer money logic includes a transaction block to ensure that the transfer is successful only when both, withdrawal from the transferor and deposit to the transferee are successful. If one of these operations fail, the transaction will be aborted and all actions carried out before the failure will also be rolled back. 
+Skeleton of the `account-manager.bal` is given below.
 
+##### account-manager.bal
+```ballerina
+package BankingApplication;
 
-### Response You'll Get
+import ballerina.data.sql;
+import ballerina.log;
+import BankingApplication.dbUtil;
+import ballerina.config;
+
+// Get the SQL client connector
+sql:ClientConnector sqlConnector = dbUtil:getDatabaseClientConnector();
+
+// Execute the database initialization function
+boolean init = initializeDB();
+
+// Function to add users to 'ACCOUNT' table of 'bankDB' database
+public function createAccount (string name) (int accId) {
+    // Implemetation
+    
+    // Return the primary key, which will be the account number of the account
+    return;
+}
+
+// Function to verify an account whether it exists or not
+public function verifyAccount (int accId) (boolean accExists) {
+    // Implementation
+    
+    // Return a boolean, which will be true if account exists; false otherwise
+    return;
+}
+
+// Function to check balance in an account
+public function checkBalance (int accId) (int balance, error err) {
+    // Implementation
+
+    // Return the balance
+    return;
+}
+
+// Function to deposit money to an account
+public function depositMoney (int accId, int amount) (error err) {
+    // Implementation
+
+    // Return error if amount is invalid or account does not exist
+    return;
+}
+
+// Function to withdraw money from an account
+public function withdrawMoney (int accId, int amount) (error err) {
+    // Implementation
+    
+    // Return error if amount is invalid or account does not exist or if balance is not enough
+    return;
+}
+
+// Function to transfer money from one account to another
+public function transferMoney (int fromAccId, int toAccId, int amount) (boolean isSuccessful) {
+    // Implementation 
+   
+    // Return a boolean, which will be true if transaction is successful; false otherwise
+    return;
+}
+
+// Private function to initialize the database
+function initializeDB () (boolean isInitialized) {
+    // Implementation 
+    
+    // Return a boolean, which will be true if the initialization is successful; false otherwise
+    return;
+}
+
+```
+
+The below code segment shows the implementation of function `transferMoney`. This explains how we can use transactions in Ballerina. Inline comments are used to explain the code line by line. 
+
+```ballerina
+// Function to transfer money from one account to another
+public function transferMoney (int fromAccId, int toAccId, int amount) (boolean isSuccessful) {
+    // Transaction block - Ensures the 'ACID' properties
+    // Withdraw and deposit should happen as a transaction when transfer money from one account to another
+    transaction with retries(0) {
+        log:printInfo("Initiating transaction");
+        log:printInfo("Transferring money from account ID " + fromAccId + " to account ID " + toAccId);
+        // Withdraw money from transferor's account
+        error withdrawError = withdrawMoney(fromAccId, amount);
+        if (withdrawError != null) {
+            log:printError("Error while withdrawing the money: " + withdrawError.msg);
+            // Abort transaction if withdrawal fails
+            abort;
+        }
+        // Deposit money to transferee's account
+        error depositError = depositMoney(toAccId, amount);
+        if (depositError != null) {
+            log:printError("Error while depositing the money: " + depositError.msg);
+            // Abort transaction if deposit fails
+            abort;
+        }
+        // If transaction successful
+        isSuccessful = true;
+        log:printInfo("Transaction committed");
+        log:printInfo("Successfully transferred $" + amount + " from account ID " + fromAccId + " to account ID " +
+                      toAccId);
+    } failed {
+        // Executed when a transaction fails
+        log:printError("Error while transferring money from account ID " + fromAccId + " to account ID " + toAccId);
+        log:printError("Transaction failed");
+    }
+    // Return a boolean, which will be true if transaction is successful; false otherwise
+    return;
+}
+```
+Please refer `https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/account-manager.bal` file to see the complete implementation of `account-manager.bal`.
+
+3. Finally, we will create the `application.bal`, which includes the main function. This file has three possible scenarios to check the transfer money operation of our banking application to clearly explain the database transaction management using Ballerina. Code is attached below, which also includes inline comments for further understanding.
+
+##### application.bal
+
+```ballerina
+package BankingApplication;
+
+import ballerina.log;
+
+function main (string[] args) {
+    log:printInfo("----------------------------------------------------------------------------------");
+    // Create two new accounts
+    log:printInfo("Creating two new accounts for users 'Alice' and 'Bob'");
+    int accIdUser1 = createAccount("Alice");
+    int accIdUser2 = createAccount("Bob");
+
+    // Deposit money to both new accounts
+    log:printInfo("Deposit $500 to Alice's account initially");
+    _ = depositMoney(accIdUser1, 500);
+    log:printInfo("Deposit $1000 to Bob's account initially");
+    _ = depositMoney(accIdUser2, 1000);
+
+    // Scenario 1 - Transaction expected to be successful
+    log:printInfo("\n\n--------------------------------------------------------------- Scenario 1"
+                  + "--------------------------------------------------------------");
+    log:printInfo("Transfer $300 from Alice's account to Bob's account");
+    log:printInfo("Expected: Transaction to be successful");
+    _ = transferMoney(accIdUser1, accIdUser2, 300);
+    log:printInfo("Check balance for Alice's account");
+    _, _ = checkBalance(accIdUser1);
+    log:printInfo("You should see $200 balance in Alice's account");
+    log:printInfo("Check balance for Bob's account");
+    _, _ = checkBalance(accIdUser2);
+    log:printInfo("You should see $1300 balance in Bob's account");
+
+    // Scenario 2 - Transaction expected to fail
+    log:printInfo("\n\n--------------------------------------------------------------- Scenario 2"
+                  + "--------------------------------------------------------------");
+    log:printInfo("Again try to transfer $500 from Alice's account to Bob's account");
+    log:printInfo("Expected: Transaction to fail as Alice now only has a balance of $200 in account");
+    _ = transferMoney(accIdUser1, accIdUser2, 500);
+    log:printInfo("Check balance for Alice's account");
+    _, _ = checkBalance(accIdUser1);
+    log:printInfo("You should see $200 balance in Alice's account");
+    log:printInfo("Check balance for Bob's account");
+    _, _ = checkBalance(accIdUser2);
+    log:printInfo("You should see $1300 balance in Bob's account");
+
+    // Scenario 3 - Transaction expected to fail
+    log:printInfo("\n\n--------------------------------------------------------------- Scenario 3"
+                  + "--------------------------------------------------------------");
+    log:printInfo("Try to transfer $500 from Bob's account to a non existing account ID");
+    log:printInfo("Expected: Transaction to fail as account ID of recipient is invalid");
+    _ = transferMoney(accIdUser2, 1234, 500);
+    log:printInfo("Check balance for Bob's account");
+    _, _ = checkBalance(accIdUser2);
+    log:printInfo("You should see $1300 balance in Bob's account (NOT $800)");
+    log:printInfo("Explanation: When trying to transfer $500 from Bob's account to account ID 123, \ninitially $500" +
+                  "withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipient" +
+                  "account ID; Hence \nthe TX failed and the withdraw operation rollbacked, which is in the same TX" +
+                  "\n");
+    log:printInfo("\n-------------------------------------------------------------------" +
+                  "---------------------------------------------------------------------");
+}
+
+```
+
+## <a name="testing"></a> Testing 
+
+### <a name="running"></a> Running the Application
+
+You can run this sample by simply navigating to the `managing-database-transactions/BankingApplication` folder and running the following command in the terminal.
+
+```bash
+$ ballerina run application.bal
+```
+
+### <a name="response"></a> Response You'll Get
 
 ```
 2018-02-16 07:16:33,259 INFO  [BankingApplication] - ------------------------------- DB Initialization ------------------------------- 
@@ -217,7 +407,7 @@ public function createDatabase (sql:ClientConnector sqlConnector, string dbName)
 2018-02-16 07:16:33,601 INFO  [BankingApplication] - Available balance in account ID 2: 1300 
 2018-02-16 07:16:33,601 INFO  [BankingApplication] - You should see $1300 balance in Bob's account (NOT $800) 
 2018-02-16 07:16:33,601 INFO  [BankingApplication] - Explanation: When trying to transfer $500 from Bob's account to account ID 123, 
-initially $500withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipientaccount ID; Hence 
+initially $500 withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipient account ID; Hence 
 the TX failed and the withdraw operation rollbacked, which is in the same TX
  
 2018-02-16 07:16:33,601 INFO  [BankingApplication] - 
@@ -225,34 +415,19 @@ the TX failed and the withdraw operation rollbacked, which is in the same TX
 
 ```
 
+### <a name="unit-testing"></a> Writing Unit Tests 
 
-## <a name="deploying-the-scenario"></a> Deployment
+In ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
+* Test files should contain _test.bal suffix.
+* Test functions should contain test prefix.
+  * e.g.: testCreateAccount()
 
-Once you are done with the development, you can deploy the service using any of the methods that we listed below. 
+This guide contains unit test cases for each method implemented in `database-utilities.bal` and `account-manager.bal` files.
+Test files are in the same packages in which the above files are located.
 
-### <a name="deploying-on-locally"></a> Deploying Locally
-You can deploy this application in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
-
+To run the unit tests, go to the sample root directory and run the following command
+```bash
+$ ballerina test BankingApplication/
 ```
-ballerina run application.balx 
-```
 
-
-### <a name="deploying-on-docker"></a> Deploying on Docker
-(Work in progress) 
-
-### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
-(Work in progress) 
-
-
-## <a name="observability"></a> Observability 
-
-### <a name="logging"></a> Logging
-(Work in progress) 
-
-### <a name="metrics"></a> Metrics
-(Work in progress) 
-
-
-### <a name="tracing"></a> Tracing 
-(Work in progress) 
+To check the implementations of these test files, please go to `https://github.com/ballerina-guides/managing-database-transactions/blob/master/BankingApplication/` and refer the respective folders of `database-utilities.bal` and `account-manager.bal` files.
