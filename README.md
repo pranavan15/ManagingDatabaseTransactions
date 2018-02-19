@@ -65,7 +65,7 @@ DATABASE_NAME = bankDB
 ```
 First you have to replace `localhost`, `3306`, `username`, `password`, `5` with the respective MySQL database connection properties you need in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
 
-# Implementing the Banking Application
+### Implementing the Banking Application
 
 1. 
 
