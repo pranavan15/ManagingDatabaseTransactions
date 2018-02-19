@@ -2,7 +2,7 @@
 In this guide you will learn about managing database transactions using Ballerina.
 
 ## <a name="what-you-build"></a> What you’ll Build 
-To understanding how you can manage database transactions using Ballerina, let’s consider a real world use case of a simple banking appliacation. This simple banking application allows users to,
+To understanding how you can manage database transactions using Ballerina, let’s consider a real world use case of a simple banking appliacation. In this example you will build a simple banking application, which will allow users to,
 
 - **Create accounts** : Create a new account by providing username
 - **Verify accounts** : Verify the existance of an account by providing the account Id
@@ -63,11 +63,13 @@ DATABASE_PASSWORD = password
 DATABASE_MAX_POOL_SIZE = 5
 DATABASE_NAME = bankDB
 ```
-First you need to replace `localhost`, `3306`, `username`, `password`, `5` with the respective MySQL database connection properties in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
+First you have to replace `localhost`, `3306`, `username`, `password`, `5` with the respective MySQL database connection properties you need in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
 
-# --------------- TODO ---------------
+# Implementing the Banking Application
 
-## Response You'll Get
+1. 
+
+### Response You'll Get
 
 ```
 2018-02-16 07:16:33,259 INFO  [BankingApplication] - ------------------------------- DB Initialization ------------------------------- 
