@@ -50,9 +50,9 @@ function main (string[] args) {
     log:printInfo("Check balance for Bob's account");
     _, _ = checkBalance(accIdUser2);
     log:printInfo("You should see $1300 balance in Bob's account (NOT $800)");
-    log:printInfo("Explanation: When trying to transfer $500 from Bob's account to account ID 123, \ninitially $500" +
-                  "withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipient" +
-                  "account ID; Hence \nthe TX failed and the withdraw operation rollbacked, which is in the same TX" +
+    log:printInfo("Explanation: When trying to transfer $500 from Bob's account to account ID 123, \ninitially $500 " +
+                  "withdrawed from Bob's account. But then the deposit operation failed due to an invalid recipient " +
+                  "account ID; Hence \nthe TX failed and the withdraw operation rollbacked, which is in the same TX " +
                   "\n");
     log:printInfo("\n-------------------------------------------------------------------" +
                   "---------------------------------------------------------------------");

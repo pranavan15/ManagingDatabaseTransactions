@@ -172,7 +172,7 @@ public function transferMoney (int fromAccId, int toAccId, int amount) (boolean 
         log:printError("Transaction failed");
     }
     // Return a boolean, which will be true if transaction is successful; false otherwise
-    return isSuccessful;
+    return;
 }
 
 // Private function to initialize the database
